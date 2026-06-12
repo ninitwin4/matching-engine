@@ -113,3 +113,27 @@ logic over directional data, so it is cheap to revisit.
 - Usage shows metro-area splits harming match supply → consider
   city-cluster or commute-radius filters.
 - Display-rule feedback (does min feel too harsh?) → it's a read-time change.
+
+## Amendments (2026-06-10, Tier 0 golden-pair authoring session)
+
+1. **Launch markets and controlled location vocabulary.** v1 launches in two
+   markets — the SF Bay Area and New York City — with location as a
+   **dropdown of exactly 10 values** (exact-match filtering requires a
+   controlled vocabulary; free text breaks on spelling):
+   *Bay Area:* San Francisco, Oakland, Berkeley, San Jose, Daly City.
+   *NYC:* Manhattan, Brooklyn, Queens, The Bronx, Staten Island.
+2. **NYC is per-borough.** Each borough is its own market, consistent with
+   the SF ≠ Daly City ruling: adjacency does not imply the same market.
+   (This sharpens, not contradicts, the "city-level" decision above — the
+   filter unit is the dropdown value.)
+3. **Binary + self-describe reconfirmed** after explicit review of the
+   trade-off; the documented semantics stand.
+4. **Eval requirement: Tier 0 suites must include must-PASS cases.** Filters
+   fail two ways — leaking bad pairs through and wrongly blocking good ones.
+   Rejection cases catch only the first; an over-aggressive filter silently
+   starves match supply. Every filter gets at least one pass case proving
+   compatible same-market pairs reach scoring.
+5. **Golden-pair authoring rule: isolate exactly one variable.** A Tier 0
+   rejection case must fail on exactly one filter and explicitly pass all
+   other fields (all required fields stated), so a test failure identifies
+   which filter fired.
