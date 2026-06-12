@@ -1,41 +1,48 @@
-# Matching Engine
+# Architecture Decision Records (ADRs)
 
-A **domain-agnostic compatibility-matching engine**. The engine is the
-product; the roommate/housing app is its first reference implementation —
-the demo that proves the platform (see ADR-003).
+This folder captures the significant architecture decisions for the matching engine
+platform and its first reference implementation (the roommate/housing app).
 
-## How it works
+## What is an ADR?
 
-Matching runs as a tiered pipeline (ADR-004): Tier 0 **filters** gate
-viability before any scoring; Tier 1 computes a **deterministic base score**
-(0–90) from structured attributes; Tier 2 **enriches** top candidates with a
-bounded AI nuance bonus (±10, hard-capped in code) read from free-text bios
-(ADR-001). Scores are directional — A→B and B→A are computed and stored
-separately, and the headline displays the minimum. Every change to scoring
-logic or prompts must pass the eval harness before it ships (ADR-002).
+An ADR is a short document recording one architecturally significant decision:
+what we decided, the context that forced the decision, the alternatives we
+considered, and the consequences we accept. ADRs are written *when the decision
+is made* and are never edited to pretend we always knew better — if a decision
+is reversed, a new ADR supersedes the old one.
 
-The engine speaks only in generic vocabulary — entities, attributes,
-constraint roles (filter, hard constraint, soft preference, similarity,
-complementary), weights, scores. A new domain is a validated config file
-plus thin glue code, not an engine change.
+Format follows Michael Nygard's classic template (Context → Decision → Consequences),
+extended with an "Alternatives considered" section.
 
-## Repository layout
+## Index
 
-```
-engine/        # the product: generic core, zero domain imports
-domains/
-  housing/     # reference implementation: config + questionnaire + glue
-evals/
-  cases/       # golden-pair datasets (the theory of compatibility, testable)
-  reports/     # timestamped eval reports, committed and diffable
-docs/adr/      # architecture decision records — binding decisions
-```
+| ID | Title | Status |
+|----|-------|--------|
+| [ADR-001](ADR-001-hybrid-scoring.md) | Hybrid scoring: deterministic core with bounded AI nuance bonus | Accepted, amended 2026-06-10 |
+| [ADR-002](ADR-002-eval-harness-score-correctness-first.md) | Eval harness measures score correctness first | Accepted, amended 2026-06-10 |
+| [ADR-003](ADR-003-engine-as-product.md) | The matching engine is the product; housing is the reference implementation | Accepted, amended 2026-06-10 |
+| [ADR-004](ADR-004-tiered-pipeline-directional-scoring.md) | Tiered matching pipeline, directional scoring, and minimum-score display | Accepted |
 
-The dependency direction is strict: `engine/` imports nothing from
-`domains/`; housing imports the engine.
+## Statuses
 
-## Decisions
+- **Proposed** — under discussion
+- **Accepted** — in effect
+- **Superseded by ADR-XXX** — replaced by a later decision
 
-All architecturally significant decisions are recorded in
-[docs/adr/](docs/adr/README.md). Read them before changing anything
-structural — they are binding until superseded.
+## Appendix: learning & build roadmap
+
+The project doubles as a learning vehicle. The phases are sequenced so each
+produces the raw material the next requires:
+
+1. **Golden pairs** — author the eval dataset (the product's theory of
+   compatibility, in testable form). *In progress.*
+2. **Eval harness runs** — dataset + runner + report (ADR-002 skeleton).
+3. **Failure analysis** — only learnable once real failures exist: build a
+   failure taxonomy (direction errors, groundedness errors, variance
+   blowups), find patterns, decide whether each fix belongs in the prompt,
+   the weights, or the test case itself.
+4. **Latency / accuracy / cost optimization** — needs a baseline to optimize
+   against. Measure the trades already designed in (top-N gating, model
+   right-sizing, caching — ADR-001 amendments): e.g., does the small model's
+   bonus agree with a larger model's often enough? That experiment runs *on*
+   the eval harness from phase 2.
