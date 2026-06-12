@@ -108,3 +108,36 @@ refinements, adopted same-day:
 Rationale: LLM calls dominate variable cost (~90%+); deterministic scoring
 and Postgres are effectively free by comparison. Cost strategy = shrink the
 funnel before the expensive layer.
+
+## Amendments (2026-06-12, field-data review session)
+
+Grounded in a 21-post field sample of real SF Bay Area roommate posts
+(research analysis maintained in the planning workspace, outside the repo;
+key findings are recorded inline below):
+
+1. **Housing v1 Tier 1 schema pinned.**
+   *Hard constraints:* smoking (bidirectional: smoker vs. tolerance),
+   pets/allergy (bidirectional; allergy is stricter — checked against actual
+   household pets, never soft), budget (interval overlap; hard floor + graded
+   above per earlier amendment), **move-in window** (interval overlap on date
+   ranges; 20/21 field frequency), **lease term** (interval overlap on month
+   ranges; 19/21 field frequency).
+   *Similarity attributes and weights (decision owner: Ni Ni):*
+   cleanliness 0.30, noise 0.25, guests 0.20, homebody 0.15, sleep_time 0.10
+   (sum 1.00). All on 1–5 scales.
+   *Deferred from v1:* utilities, bathroom config (listing-side attributes —
+   belong to a future seeker↔listing match type), age range and work style
+   (fair-housing entanglement; future ADR with legal review required before
+   use as filters or scored attributes).
+2. **Interval-overlap is now a first-class engine check** (used by budget,
+   move-in, lease term) — one mechanism, three constraint instances.
+3. **LLM nuance bonus scores specificity and evidence, not keywords.** Field
+   data shows 16/21 posts ritually claim "clean and respectful" — keyword
+   presence carries no signal. The bonus prompt rewards behavioral
+   commitments, verifiable arrangements, and third-party attestations over
+   generic claims.
+4. **Documentation governance:** the repo is the single source of truth.
+   Raw research and planning documents stay in the planning workspace;
+   their conclusions are distilled into ADRs and domain config before any
+   build session, so implementation sessions never consume undistilled or
+   conflicting source material.
