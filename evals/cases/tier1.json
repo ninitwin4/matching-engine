@@ -161,7 +161,7 @@
     {
       "id": "hc-003",
       "kind": "deterministic",
-      "description": "DRAFT FOR NI NI'S REVIEW - Hard constraint - smoking: Oakland males, A smokes at home, B strictly requires a smoke-free home. Bidirectional check fails B-to-A direction. Everything else highly compatible; smoking alone must zero the pair.",
+      "description": "Hard constraint - smoking: Oakland males, A smokes at home, B strictly requires a smoke-free home. Bidirectional check fails B-to-A direction. Everything else highly compatible; smoking alone must zero the pair.",
       "profile_a": {
         "gender": "male",
         "gender_preference": "open_to_all",
