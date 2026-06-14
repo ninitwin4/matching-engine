@@ -7,8 +7,14 @@ from pathlib import Path
 
 import pytest
 
-from domains.housing.config import LOCATION_VOCABULARY, TIER0_FILTERS, profile_to_entity
+from domains.housing.config import (
+    LOCATION_VOCABULARY,
+    SCORING_SPEC,
+    TIER0_FILTERS,
+    profile_to_entity,
+)
 from engine.filters import run_filters
+from engine.scoring import score_pair
 
 CASES_PATH = Path(__file__).resolve().parent.parent / "evals" / "cases" / "tier0.json"
 SUITE = json.loads(CASES_PATH.read_text())
@@ -39,6 +45,16 @@ def test_tier0_case(case):
         assert expected["scored"] is True
         assert decision.passed, f"must-PASS case over-blocked: {decision.failures}"
         assert decision.failures == ()
+        if "score_range" in expected:  # verifiable now that Tier 1 exists
+            a = profile_to_entity("a", case["profile_a"])
+            b = profile_to_entity("b", case["profile_b"])
+            result = score_pair(a, b, SCORING_SPEC)
+            assert result.violations == ()
+            lo, hi = expected["score_range"]
+            assert lo <= result.base_score <= hi, (
+                f"{case['id']}: base_score {result.base_score:.2f}"
+                f" outside expected range [{lo}, {hi}]"
+            )
 
 
 def test_case_vocabulary_matches_housing_config():

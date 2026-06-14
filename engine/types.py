@@ -86,3 +86,81 @@ class FilterDecision:
 
     passed: bool
     failures: tuple[FilterFailure, ...] = ()
+
+
+@dataclass(frozen=True)
+class ToleranceOverride:
+    """Escalates a ToleranceRule to strict for entities that set `attribute`.
+
+    When the evaluating side's override attribute is truthy, the candidate's
+    actor attribute alone decides — the evaluator's stated tolerance is
+    ignored. Violations report under `report_name` so domains can label the
+    stricter failure distinctly.
+    """
+
+    attribute: str
+    report_name: str
+
+
+@dataclass(frozen=True)
+class ToleranceRule:
+    """Tier 1 hard constraint: behavior vs the other side's tolerance.
+
+    Checked in both directions: the candidate's identity `actor` attribute
+    against the evaluator's preference `tolerance` attribute. Truthy actor
+    with falsy tolerance is a violation. Directions follow ADR-004 §3
+    (A_TO_B = A's preferences evaluating B).
+    """
+
+    name: str
+    actor: str
+    tolerance: str
+    override: ToleranceOverride | None = None
+
+
+@dataclass(frozen=True)
+class IntervalOverlapRule:
+    """Tier 1 hard constraint: both entities' closed intervals must overlap.
+
+    Symmetric, so violations carry no direction. None bounds are unbounded.
+    """
+
+    name: str
+    attribute: str
+
+
+HardConstraintRule = ToleranceRule | IntervalOverlapRule
+
+
+@dataclass(frozen=True)
+class Violation:
+    rule: str
+    direction: Direction | None = None
+
+
+@dataclass(frozen=True)
+class SimilarityAttribute:
+    """A scored identity attribute: closeness on `scale`, weighted."""
+
+    name: str
+    scale: tuple[float, float]
+    weight: float
+
+
+@dataclass(frozen=True)
+class ScoringSpec:
+    """Everything the engine needs to score a pair; built by a domain config."""
+
+    hard_constraints: tuple[HardConstraintRule, ...]
+    similarity: tuple[SimilarityAttribute, ...]
+    base_range: tuple[float, float]
+
+
+@dataclass(frozen=True)
+class ScoreResult:
+    """Tier 1 outcome. Violations short-circuit: base_score is the range
+    floor and `components` stays empty (similarity never ran, ADR-001)."""
+
+    base_score: float
+    violations: tuple[Violation, ...] = ()
+    components: Mapping[str, float] = field(default_factory=dict)

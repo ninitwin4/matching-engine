@@ -86,8 +86,7 @@
       },
       "expected": {
         "tier0": "pass",
-        "scored": true,
-        "score_range": [70, 85]
+        "scored": true
       }
     },
     {

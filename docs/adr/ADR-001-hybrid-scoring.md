@@ -80,6 +80,9 @@ Scoring is **hybrid with a deterministic spine and a bounded AI adjustment**:
 
 - Real-user feedback exists to validate whether the bonus improves match
   quality (if it doesn't measurably help, fall back to Alternative A).
+- Missing-data policy (score shared attributes, renormalize) lets sparse
+  profiles earn inflated scores — revisit with a completeness threshold or
+  confidence discount before real users.
 
 ## Amendments (2026-06-10, same design session)
 
