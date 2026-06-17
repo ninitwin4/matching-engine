@@ -107,3 +107,15 @@ not a single model, so the ADR-002 100% bar is cleared honestly.
   (the judge model is already a one-line config in the runner).
 - A future structured field (e.g. conflict style, alcohol policy) absorbs what
   is currently bonus-only "new signal," shrinking the bonus's scope.
+
+## Amendment (2026-06-17, cost control — decision owner: Ni Ni)
+
+Haiku is the default model for LIVE scoring in the matching path. Sonnet
+escalation is reserved for (a) the eval harness, where occasional accuracy
+checks justify the cost, and (b) individual cases the two-sample agreement gate
+flags as ambiguous. Escalation is never blanket-on in the live matching path.
+Rationale: self-funded project; the agreement gate already limits Sonnet to
+~12% of ambiguous cases, and top-N gating limits bonus calls overall. The
+accepted trade-off (ADR-005 watch-item 1) stands: when both Haiku samples agree
+on a wrong value, the system accepts it rather than paying to escalate —
+correct for the budget at this stage.
