@@ -18,10 +18,11 @@ extended with an "Alternatives considered" section.
 
 | ID | Title | Status |
 |----|-------|--------|
-| [ADR-001](ADR-001-hybrid-scoring.md) | Hybrid scoring: deterministic core with bounded AI nuance bonus | Accepted, amended 2026-06-10 |
+| [ADR-001](ADR-001-hybrid-scoring.md) | Hybrid scoring: deterministic core with bounded AI nuance bonus | Accepted, amended 2026-06-10/12; bonus-model default superseded by ADR-005 |
 | [ADR-002](ADR-002-eval-harness-score-correctness-first.md) | Eval harness measures score correctness first | Accepted, amended 2026-06-10 |
 | [ADR-003](ADR-003-engine-as-product.md) | The matching engine is the product; housing is the reference implementation | Accepted, amended 2026-06-10 |
 | [ADR-004](ADR-004-tiered-pipeline-directional-scoring.md) | Tiered matching pipeline, directional scoring, and minimum-score display | Accepted |
+| [ADR-005](ADR-005-tiered-model-escalation-for-the-ai-bonus.md) | Tiered model escalation for the Tier 2 AI nuance bonus | Accepted |
 
 ## Statuses
 

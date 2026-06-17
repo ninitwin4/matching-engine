@@ -8,7 +8,13 @@ to the scale endpoints (True = high, False = low).
 """
 
 from engine.constraints import run_hard_constraints
-from engine.types import Entity, ScoreResult, ScoringSpec, SimilarityAttribute
+from engine.types import (
+    Entity,
+    FinalScore,
+    ScoreResult,
+    ScoringSpec,
+    SimilarityAttribute,
+)
 
 
 def _coerce(value, scale: tuple[float, float]) -> float | None:
@@ -50,3 +56,16 @@ def score_pair(a: Entity, b: Entity, spec: ScoringSpec) -> ScoreResult:
         return ScoreResult(base_score=lo, violations=violations)
     fraction, components = similarity_fraction(a, b, spec.similarity)
     return ScoreResult(base_score=lo + fraction * (hi - lo), components=components)
+
+
+def final_score(base_a_to_b: float, base_b_to_a: float, bonus: float) -> FinalScore:
+    """Assemble the displayed score at read time (ADR-001, ADR-004 §3).
+
+    The base scores are directional; the Tier 2 bonus is pair-level, so the
+    same adjustment applies to both directions. The headline displays the
+    minimum of the two — cohabitation is a weakest-link system (ADR-004).
+    Inputs stay stored separately; this is the only place they combine.
+    """
+    a_to_b = base_a_to_b + bonus
+    b_to_a = base_b_to_a + bonus
+    return FinalScore(a_to_b=a_to_b, b_to_a=b_to_a, display=min(a_to_b, b_to_a))

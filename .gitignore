@@ -19,6 +19,8 @@ htmlcov/
 # Environment / secrets
 .env
 .env.*
+# the documented template is committable
+!.env.example
 
 # Editors
 .vscode/

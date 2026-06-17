@@ -164,3 +164,67 @@ class ScoreResult:
     base_score: float
     violations: tuple[Violation, ...] = ()
     components: Mapping[str, float] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class AIBonusSpec:
+    """Everything the engine needs to compute a Tier 2 nuance bonus; built by
+    a domain config. The engine knows the mechanism (call, parse, clamp,
+    degrade); the domain owns the prompt and model choice (ADR-003)."""
+
+    model: str
+    system_prompt: str
+    cap: float = 10.0  # hard cap, ADR-001 — enforced in code, not by prompt
+    max_tokens: int = 1024
+    # Tiered escalation (ADR-005): sample the primary model `samples` times;
+    # if the samples disagree by more than `agreement_threshold`, escalate to
+    # `escalation_model`. escalation_model=None disables escalation.
+    escalation_model: str | None = None
+    samples: int = 2
+    agreement_threshold: float = 1.0
+
+
+@dataclass(frozen=True)
+class AIBonusResult:
+    """Tier 2 outcome. `adjustment` is always within [-cap, cap] — clamped in
+    code, never trusted to the model. `raw_adjustment` preserves what the model
+    actually returned (None when degraded). On any failure the engine degrades
+    to a zero adjustment so a match never depends on LLM availability
+    (ADR-001)."""
+
+    adjustment: float
+    rationale: str
+    raw_adjustment: float | None = None
+    degraded: bool = False
+    latency_ms: float | None = None
+    input_tokens: int | None = None
+    output_tokens: int | None = None
+
+
+@dataclass(frozen=True)
+class EscalatedBonusResult:
+    """Outcome of the tiered escalation policy (ADR-005). Carries the final
+    adjustment plus enough provenance to audit escalation rate and per-model
+    cost: the primary-model `samples` and the secondary-model `escalation`
+    call (None when the samples agreed and no escalation happened)."""
+
+    adjustment: float
+    rationale: str
+    raw_adjustment: float | None
+    degraded: bool
+    model: str  # the model that produced the final adjustment
+    escalated: bool
+    samples: tuple["AIBonusResult", ...]
+    escalation: "AIBonusResult | None"
+    latency_ms: float
+
+
+@dataclass(frozen=True)
+class FinalScore:
+    """Read-time assembly of base + bonus. Stored fields stay separate and
+    are never blended (ADR-001); `display` is the minimum of the two
+    directions (ADR-004 §3)."""
+
+    a_to_b: float
+    b_to_a: float
+    display: float

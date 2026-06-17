@@ -107,6 +107,9 @@ refinements, adopted same-day:
 5. **Model right-sizing.** The bonus is a small bounded judgment; a fast,
    inexpensive model class is the default. Batch/async processing is
    acceptable because matching is not a real-time requirement.
+   *(Superseded by ADR-005, 2026-06-17: eval data showed the small model is
+   unreliable at the new-signal boundary, so the bonus now uses a Haiku→Sonnet
+   self-agreement escalation ladder rather than a flat small-model default.)*
 
 Rationale: LLM calls dominate variable cost (~90%+); deterministic scoring
 and Postgres are effectively free by comparison. Cost strategy = shrink the
