@@ -115,6 +115,10 @@ SCORING_SPEC = ScoringSpec(
     base_range=tuple(_raw["base_score_range"]),
 )
 
+# Tier 2 applies the AI bonus only to each seeker's top-N candidates by base
+# score (ADR-001 amendment 2). N is domain config, not engine.
+TOP_N = _raw["ai_bonus"]["top_n"]
+
 
 # ---- Profile glue ----
 

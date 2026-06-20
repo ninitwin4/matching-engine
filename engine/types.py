@@ -228,3 +228,21 @@ class FinalScore:
     a_to_b: float
     b_to_a: float
     display: float
+
+
+@dataclass(frozen=True)
+class Match:
+    """One ranked match in an end-to-end run. `display_score` is what the card
+    shows (min of the two directions, ADR-004); the base scores, AI adjustment,
+    and rationale are kept separate, never blended (ADR-001). `components` is
+    the similarity breakdown for the detail view."""
+
+    candidate_id: str
+    display_score: float
+    base_a_to_b: float
+    base_b_to_a: float
+    ai_adjustment: float
+    ai_rationale: str
+    ai_applied: bool  # was the bonus run (i.e. in top-N)?
+    degraded: bool  # did the LLM call fall back to base?
+    components: Mapping[str, float] = field(default_factory=dict)
