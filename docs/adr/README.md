@@ -23,6 +23,7 @@ extended with an "Alternatives considered" section.
 | [ADR-003](ADR-003-engine-as-product.md) | The matching engine is the product; housing is the reference implementation | Accepted, amended 2026-06-10 |
 | [ADR-004](ADR-004-tiered-pipeline-directional-scoring.md) | Tiered matching pipeline, directional scoring, and minimum-score display | Accepted |
 | [ADR-005](ADR-005-tiered-model-escalation-for-the-ai-bonus.md) | Tiered model escalation for the Tier 2 AI nuance bonus | Accepted |
+| [ADR-006](ADR-006-complementary-and-soft-preference-scoring.md) | Engine gains complementary and soft-preference scoring | Accepted |
 
 ## Statuses
 

@@ -140,7 +140,8 @@ class Violation:
 
 @dataclass(frozen=True)
 class SimilarityAttribute:
-    """A scored identity attribute: closeness on `scale`, weighted."""
+    """A scored identity attribute: closeness on `scale`, weighted.
+    Rewards alikeness — two near values score high (ADR-001 role)."""
 
     name: str
     scale: tuple[float, float]
@@ -148,12 +149,52 @@ class SimilarityAttribute:
 
 
 @dataclass(frozen=True)
+class ComplementaryAttribute:
+    """Strength-fills-need scoring (ADR-001 role; ADR-006). One side of the pair
+    has a `need` (a dimension label); the other holds a `strengths` map of
+    dimension -> level label. The score is the provider's level in the needed
+    dimension, mapped through `levels` to a fraction.
+
+    Orientation-robust: the (needer, provider) relationship is located within
+    the pair regardless of argument order, so a directional need scores the same
+    whichever entity is passed first — which lets the directional pipeline's
+    min rule handle asymmetric matching unchanged (ADR-006)."""
+
+    name: str
+    need: str
+    strengths: str
+    levels: Mapping[Any, float]
+    weight: float
+    missing_level: float = 0.0
+
+
+@dataclass(frozen=True)
+class SoftPreferenceRule:
+    """A weighted, non-exclusionary preference (ADR-001 role). The seeker's
+    `preference` (in preferences) is tested against the candidate's `attribute`
+    via `accepted` (value -> accepted set | ACCEPT_ANY). Met -> 1.0; a stated
+    but unmet preference -> `unmet_score` (a penalty, never a disqualification);
+    no preference stated -> the factor is skipped."""
+
+    name: str
+    preference: str
+    attribute: str
+    accepted: Mapping[Any, Any]
+    weight: float
+    unmet_score: float = 0.0
+
+
+@dataclass(frozen=True)
 class ScoringSpec:
-    """Everything the engine needs to score a pair; built by a domain config."""
+    """Everything the engine needs to score a pair; built by a domain config.
+    `complementary` and `soft_preferences` default empty so similarity-only
+    domains (housing) are unaffected (ADR-006)."""
 
     hard_constraints: tuple[HardConstraintRule, ...]
     similarity: tuple[SimilarityAttribute, ...]
     base_range: tuple[float, float]
+    complementary: tuple[ComplementaryAttribute, ...] = ()
+    soft_preferences: tuple[SoftPreferenceRule, ...] = ()
 
 
 @dataclass(frozen=True)

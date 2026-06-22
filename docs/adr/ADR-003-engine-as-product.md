@@ -102,3 +102,17 @@ Concretely:
    ADR-004), but the role remains supported in the engine — other attributes
    use it (budget overlap), and re-enabling it for gender later is a config
    change, not an engine change. Principle: *decide simply, build flexibly.*
+
+## Amendment (2026-06-17, second-domain selection)
+
+The example second domain in this record is **healthcare (patient-to-therapist
+matching)**, not mentorship. Earlier references to a "hypothetical mentorship
+domain" above are left as written (ADRs record what we believed at the time);
+this amendment supersedes the *choice of example*. Healthcare was built as a
+minimal second config to stress-test the engine/domain split — see
+`domains/healthcare/`. The stress test surfaced that the engine had declared
+five attribute roles (amendment 1) but only implemented three; building
+healthcare drove the missing `complementary` and `soft_preference` scoring
+into the engine generically (see **ADR-006**). No domain vocabulary entered the
+engine — the split held; the engine was merely completed to match its own
+stated role set.

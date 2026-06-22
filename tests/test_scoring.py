@@ -10,11 +10,14 @@ from engine.constraints import run_hard_constraints
 from engine.intervals import intervals_overlap
 from engine.scoring import score_pair, similarity_fraction
 from engine.types import (
+    ACCEPT_ANY,
+    ComplementaryAttribute,
     Direction,
     Entity,
     IntervalOverlapRule,
     ScoringSpec,
     SimilarityAttribute,
+    SoftPreferenceRule,
     ToleranceOverride,
     ToleranceRule,
     Violation,
@@ -153,3 +156,75 @@ def test_clean_pair_scales_to_base_range():
     result = score_pair(a, b, SPEC)
     assert result.base_score == pytest.approx(54.0)  # 0.6 * 90
     assert result.violations == ()
+
+
+# ---- complementary + soft preference (ADR-006) ----
+
+LEVELS = {"effective": 1.0, "neutral": 0.5, "ineffective": 0.0}
+COMP = ComplementaryAttribute(
+    name="fit", need="need", strengths="strengths", levels=LEVELS, weight=1.0
+)
+
+
+def test_complementary_scores_provider_strength_in_need():
+    patient = Entity("p", {"need": "trauma"})
+    strong = Entity("t1", {"strengths": {"trauma": "effective", "depression": "neutral"}})
+    weak = Entity("t2", {"strengths": {"trauma": "ineffective"}})
+    spec = ScoringSpec(hard_constraints=(), similarity=(), base_range=(0, 90),
+                       complementary=(COMP,))
+    assert score_pair(patient, strong, spec).base_score == pytest.approx(90.0)
+    assert score_pair(patient, weak, spec).base_score == pytest.approx(0.0)
+
+
+def test_complementary_missing_dimension_uses_missing_level():
+    patient = Entity("p", {"need": "substance_use"})
+    therapist = Entity("t", {"strengths": {"trauma": "effective"}})  # no substance_use
+    spec = ScoringSpec(hard_constraints=(), similarity=(), base_range=(0, 90),
+                       complementary=(COMP,))
+    assert score_pair(patient, therapist, spec).base_score == pytest.approx(0.0)
+
+
+def test_complementary_is_orientation_robust():
+    # Directional need must score the same whichever entity is passed first,
+    # so the pipeline's min-of-both-directions rule yields the forward score.
+    patient = Entity("p", {"need": "trauma"})
+    therapist = Entity("t", {"strengths": {"trauma": "effective"}})
+    spec = ScoringSpec(hard_constraints=(), similarity=(), base_range=(0, 90),
+                       complementary=(COMP,))
+    assert (score_pair(patient, therapist, spec).base_score
+            == score_pair(therapist, patient, spec).base_score
+            == pytest.approx(90.0))
+
+
+GENDER_PREF = SoftPreferenceRule(
+    name="gender_pref", preference="wants", attribute="gender",
+    accepted={"female": frozenset({"female"}), "any": ACCEPT_ANY},
+    weight=1.0, unmet_score=0.25,
+)
+
+
+def test_soft_preference_met_unmet_and_absent():
+    spec = ScoringSpec(hard_constraints=(), similarity=(), base_range=(0, 100),
+                       soft_preferences=(GENDER_PREF,))
+    a_wants_f = Entity("a", {}, {"wants": "female"})
+    fem = Entity("f", {"gender": "female"})
+    masc = Entity("m", {"gender": "male"})
+    assert score_pair(a_wants_f, fem, spec).base_score == pytest.approx(100.0)  # met
+    assert score_pair(a_wants_f, masc, spec).base_score == pytest.approx(25.0)  # unmet penalty
+    # No preference stated -> factor skipped -> no scored factors -> raises.
+    with pytest.raises(ValueError):
+        score_pair(Entity("a", {}, {}), masc, spec)
+
+
+def test_complementary_dominates_when_weighted_higher():
+    # complementary weight 0.8 vs similarity 0.2 -> complementary drives ranking.
+    sim = SimilarityAttribute(name="lang", scale=(1, 5), weight=0.2)
+    comp = ComplementaryAttribute(name="fit", need="need", strengths="strengths",
+                                  levels=LEVELS, weight=0.8)
+    spec = ScoringSpec(hard_constraints=(), similarity=(sim,), base_range=(0, 90),
+                       complementary=(comp,))
+    patient = Entity("p", {"need": "trauma", "lang": 3})
+    # Strong on trauma but dissimilar language vs weak on trauma but identical language.
+    strong = Entity("t1", {"strengths": {"trauma": "effective"}, "lang": 1})
+    weak = Entity("t2", {"strengths": {"trauma": "ineffective"}, "lang": 3})
+    assert score_pair(patient, strong, spec).base_score > score_pair(patient, weak, spec).base_score
