@@ -1,0 +1,80 @@
+# ============================================================================
+# COMPLIANCE DISCLAIMER
+# This config demonstrates the matching engine's domain-agnosticism. It is
+# NOT a clinical or medical product. All profiles are synthetic. No real
+# patient data, no PHI, no medical claims or advice. Not HIPAA-scoped.
+# ============================================================================
+#
+# Second domain (ADR-003 amendment, 2026-06-17), built to stress-test the
+# engine/domain split. It exercises the complementary + soft_preference roles
+# the housing reference never used (ADR-006). Patient->therapist is asymmetric:
+# the patient side is fully scored; the therapist side is eligibility only.
+
+domain: healthcare
+version: 1
+
+match_type: patient_to_therapist   # asymmetric — therapist side is eligibility only
+
+# ---- Tier 0: filters (coarse eligibility pre-filter; failed pairs unscored) ----
+# Single-value modeling (one state / insurance / population per therapist) keeps
+# these on the existing SameValue/Accepts primitives — no engine change. Real
+# multi-state licensure would want a membership filter (flagged in ADR-006).
+filters:
+  state:
+    type: exact_match            # therapist licensed where the patient is
+  insurance:
+    type: exact_match            # patient's plan is the therapist's network
+  population:
+    type: exact_match            # therapist treats the patient's population
+
+# ---- Tier 1: hard constraints (violation -> base 0, short-circuit) ----
+hard_constraints:
+  modality:
+    type: bidirectional_tolerance   # therapist.telehealth_only vs patient.accepts_telehealth
+    actor: telehealth_only          # truthy on the therapist
+    tolerance: accepts_telehealth   # falsy on a patient who needs in-person -> match fails
+
+# ---- Tier 1: similarity (shared identity / lived experience; alike scores higher) ----
+# Binary concordance flags (same key on both sides), low total weight — identity
+# fit matters, but it is not what drives the match here.
+similarity:
+  lgbtq_affirming:      { scale: [0, 1], weight: 0.10 }
+  cultural_concordance: { scale: [0, 1], weight: 0.10 }
+  language_concordance: { scale: [0, 1], weight: 0.10 }
+
+# ---- Tier 1: complementary (THE CENTERPIECE) — strength fills need ----
+# Therapist's measured effectiveness in the patient's primary need. Dominant
+# weight: the opposite of housing, which leaned on similarity (ADR-006).
+complementary:
+  effectiveness:
+    need: primary_need            # patient.primary_need -> a problem domain
+    strengths: effectiveness      # therapist.effectiveness -> {domain: level}
+    levels: { effective: 1.0, neutral: 0.5, ineffective: 0.0 }
+    missing_level: 0.0            # no measured strength in the need -> 0
+    weight: 0.55
+
+# ---- Tier 1: soft preferences (weighted, never exclusionary) ----
+soft_preferences:
+  therapist_gender:
+    preference: therapist_gender_pref
+    attribute: gender
+    accepted: { female: [female], male: [male], any: ANY }
+    unmet_score: 0.3
+    weight: 0.06
+  sliding_scale:
+    preference: wants_sliding_scale
+    attribute: sliding_scale
+    accepted: { "yes": [true], "no": ANY }
+    unmet_score: 0.3
+    weight: 0.05
+  scheduling:
+    preference: schedule_pref
+    attribute: schedule
+    accepted: { evening: [evening, flexible], daytime: [daytime, flexible], any: ANY }
+    unmet_score: 0.4
+    weight: 0.04
+
+base_score_range: [0, 100]   # no Tier 2 bonus in this domain — full range is deterministic
+
+# ---- Therapist eligibility handled as a domain pre-filter (unary, not relational) ----
+# accepts_new_patients / has_capacity gate the pool before scoring (see match.py).
