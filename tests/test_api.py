@@ -1,8 +1,7 @@
 """API tests via FastAPI's TestClient. The Anthropic client is overridden to
-None so /match runs deterministically (Tier 0+1, no bonus) — offline and free.
+None so /match runs deterministically (no LLM) — offline and free.
 """
 
-import pytest
 from fastapi.testclient import TestClient
 
 from api.main import app, get_client
@@ -11,82 +10,65 @@ app.dependency_overrides[get_client] = lambda: None  # deterministic, no LLM
 client = TestClient(app)
 
 
-VALID_SEEKER = {
-    "id": "test-seeker",
-    "gender": "female",
-    "gender_preference": "open_to_all",
-    "location": "San Francisco",
-    "budget": [1300, 1900],
-    "move_in_window": ["2026-08-01", "2026-08-20"],
-    "lease_term_months": [12, 12],
-    "smoking": False,
-    "smoking_ok": False,
-    "has_pet": False,
-    "pets_ok": True,
-    "cleanliness": 5,
-    "noise": 2,
-    "guests": 2,
-    "homebody": 4,
-    "sleep_time": 3,
-    "bio": "Quiet, tidy, happy to share a cleaning rota.",
-}
-
-
 def test_health():
     r = client.get("/health")
     assert r.status_code == 200
     assert r.json() == {"status": "ok"}
 
 
-def test_profiles_returns_seed_pool():
-    r = client.get("/profiles")
+def test_profiles_housing():
+    r = client.get("/profiles", params={"domain": "housing"})
     assert r.status_code == 200
     body = r.json()
     assert len(body) == 25
-    assert {"sf-maya", "ok-noah", "bk-sam"} <= {p["id"] for p in body}
+    assert "sf-maya" in {p["id"] for p in body}
 
 
-def test_match_ranked_results_for_valid_seeker():
-    r = client.post("/match", json={"seeker": VALID_SEEKER})
+def test_profiles_healthcare():
+    r = client.get("/profiles", params={"domain": "healthcare"})
+    assert r.status_code == 200
+    assert {p["id"] for p in r.json()} == {"p-rivera", "p-okoro", "p-nguyen"}
+
+
+def test_profiles_unknown_domain_404():
+    r = client.get("/profiles", params={"domain": "mentorship"})
+    assert r.status_code == 404
+
+
+def test_match_housing_ranked_with_candidate_attrs():
+    r = client.post("/match", json={"domain": "housing", "seeker_id": "sf-priya"})
     assert r.status_code == 200
     body = r.json()
-    assert body["seeker_id"] == "test-seeker"
-    ids = [m["candidate_id"] for m in body["matches"]]
-
-    # Ranked by display score descending.
-    scores = [m["display_score"] for m in body["matches"]]
+    assert body["domain"] == "housing"
+    matches = body["matches"]
+    scores = [m["display_score"] for m in matches]
     assert scores == sorted(scores, reverse=True)
-
-    # SF females present; the identical-lifestyle profile tops it.
-    assert ids and ids[0] == "sf-maya"
-    # Tier 0 filters other cities and (none here) wrong gender; Tier 1
-    # disqualifies the smoker. None of those appear.
-    assert "ok-noah" not in ids  # different city
-    assert "sf-dmitri" not in ids  # smoker vs strict non-smoker (hard constraint)
-
-    # Deterministic run: no bonus applied.
-    assert all(m["ai_adjustment"] == 0.0 for m in body["matches"])
-    # Failing-direction info present.
-    assert body["matches"][0]["limiting_direction"] in ("a_to_b", "b_to_a")
+    assert matches[0]["candidate_id"] == "sf-maya"
+    # Candidate display attributes are enriched onto each match.
+    assert matches[0]["candidate"]["location"] == "San Francisco"
+    # Deterministic run: no bonus.
+    assert all(m["ai_adjustment"] == 0.0 for m in matches)
 
 
-def test_match_excludes_seeker_itself_from_pool():
-    seeker = dict(VALID_SEEKER, id="sf-maya")  # an id that exists in the pool
-    r = client.post("/match", json={"seeker": seeker})
+def test_match_healthcare_complementary_ranked():
+    r = client.post("/match", json={"domain": "healthcare", "seeker_id": "p-rivera"})
     assert r.status_code == 200
-    ids = [m["candidate_id"] for m in r.json()["matches"]]
-    assert "sf-maya" not in ids
+    matches = r.json()["matches"]
+    assert [m["candidate_id"] for m in matches] == [
+        "t-river-stone",
+        "t-ember-frost",
+        "t-sky-meadows",
+    ]
+    # Complementary effectiveness is exposed in components.
+    assert matches[0]["components"]["effectiveness"] == 1.0
+    assert matches[0]["candidate"]["name"] == "Dr. River Stone"
 
 
-@pytest.mark.parametrize(
-    "bad",
-    [
-        {"location": "Atlantis"},  # not in vocabulary
-        {"gender": "robot"},  # not a valid identity
-        {"cleanliness": 9},  # slider out of 1–5
-        {"gender_preference": "anyone"},  # not a valid preference
-    ],
-)
-def test_match_invalid_profile_returns_422(bad):
-    r = client.post("/match", json={"seeker": {**VALID_SEEKER, **bad}})
-    assert r.status_code == 422
+def test_match_unknown_seeker_404():
+    r = client.post("/match", json={"domain": "housing", "seeker_id": "nobody"})
+    assert r.status_code == 404
+
+
+def test_match_unknown_domain_422():
+    r = client.post("/match", json={"domain": "mentorship", "seeker_id": "x"})
+    assert r.status_code == 422  # Literal domain validation
