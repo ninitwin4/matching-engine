@@ -26,5 +26,8 @@ htmlcov/
 .vscode/
 .idea/
 
+# Local dev-server config (machine-specific absolute paths)
+.claude/launch.json
+
 # macOS
 .DS_Store
