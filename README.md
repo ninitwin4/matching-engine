@@ -41,7 +41,7 @@ is only as strong as its least-enthusiastic side.
 
 ## Architecture decisions
 
-Every significant decision is recorded as an ADR in [`docs/adr/`](docs/adr/):
+Every significant decision is recorded as an ADR in [`docs/adr/`]:
 
 - ADR-001 — Hybrid scoring: deterministic core + bounded AI bonus
 - ADR-002 — Eval harness: score correctness first
