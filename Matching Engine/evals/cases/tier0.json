@@ -1,0 +1,125 @@
+{
+  "suite": "tier0_filters",
+  "description": "Tier 0 filter golden pairs. Rejection cases must fail on exactly one filter with all other fields compatible; pass cases prove the filter does not over-block. Tier 0 rejections receive NO score (not 0 - scoring never runs).",
+  "location_vocabulary": [
+    "San Francisco", "Oakland", "Berkeley", "San Jose", "Daly City",
+    "Manhattan", "Brooklyn", "Queens", "The Bronx", "Staten Island"
+  ],
+  "cases": [
+    {
+      "id": "t0-001",
+      "kind": "tier0",
+      "description": "Location rejection: SF vs Daly City - adjacent but different markets. Gender passes both directions; lifestyles highly compatible; location alone must block.",
+      "profile_a": {
+        "gender": "female",
+        "gender_preference": "female_only",
+        "location": "San Francisco",
+        "guests": 3,
+        "privacy_respect": 5,
+        "sleep_time": 4,
+        "cleanliness": 4,
+        "budget": [1200, 1800]
+      },
+      "profile_b": {
+        "gender": "female",
+        "gender_preference": "female_only",
+        "location": "Daly City",
+        "guests": 3,
+        "privacy_respect": 5,
+        "sleep_time": 4,
+        "cleanliness": 4,
+        "budget": [1300, 1700]
+      },
+      "expected": {
+        "tier0": "reject",
+        "failed_filter": "location",
+        "scored": false
+      }
+    },
+    {
+      "id": "t0-002",
+      "kind": "tier0",
+      "description": "Gender rejection (asymmetric): A's female_only blocks male B; B's open_to_all would have allowed it. One failing direction is enough. Location and lifestyle compatible.",
+      "profile_a": {
+        "gender": "female",
+        "gender_preference": "female_only",
+        "location": "San Francisco",
+        "sleep_time": 5,
+        "homebody": true
+      },
+      "profile_b": {
+        "gender": "male",
+        "gender_preference": "open_to_all",
+        "location": "San Francisco",
+        "sleep_time": 5,
+        "homebody": true
+      },
+      "expected": {
+        "tier0": "reject",
+        "failed_filter": "gender",
+        "failing_direction": "a_to_b",
+        "scored": false
+      }
+    },
+    {
+      "id": "t0-003",
+      "kind": "tier0",
+      "description": "Must-PASS case: both female, A female_only / B open_to_all, same borough (Brooklyn). Proves the filters do not over-block; pair proceeds to scoring.",
+      "profile_a": {
+        "gender": "female",
+        "gender_preference": "female_only",
+        "location": "Brooklyn",
+        "cleanliness": 4,
+        "cooks_at_home": true,
+        "homebody": true,
+        "budget": [1400, 1900]
+      },
+      "profile_b": {
+        "gender": "female",
+        "gender_preference": "open_to_all",
+        "location": "Brooklyn",
+        "sleep_time": 5,
+        "homebody": true,
+        "privacy_respect": 5,
+        "cleanliness": 4,
+        "budget": [1500, 2000]
+      },
+      "expected": {
+        "tier0": "pass",
+        "scored": true
+      }
+    },
+    {
+      "id": "t0-004",
+      "kind": "tier0",
+      "description": "Gender rejection (relabeled from Tier 1 hard-constraint draft): B's female_only blocks male A. San Jose; budgets, timelines, lifestyles all compatible - gender filter alone must block, pair never scored.",
+      "profile_a": {
+        "gender": "male",
+        "gender_preference": "open_to_all",
+        "location": "San Jose",
+        "budget": [null, 2500],
+        "move_in_window": ["2026-09-01", "2026-09-30"],
+        "lease_term_months": [12, 12],
+        "smoking": false,
+        "cleanliness": 4
+      },
+      "profile_b": {
+        "gender": "female",
+        "gender_preference": "female_only",
+        "location": "San Jose",
+        "budget": [1500, 2000],
+        "move_in_window": ["2026-09-01", "2026-09-30"],
+        "lease_term_months": [6, 12],
+        "smoking": false,
+        "guests": 3,
+        "privacy_respect": 4
+      },
+      "expected": {
+        "tier0": "reject",
+        "failed_filter": "gender",
+        "failing_direction": "b_to_a",
+        "scored": false
+      }
+    }
+  ]
+}
