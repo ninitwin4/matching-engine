@@ -55,6 +55,18 @@ Every significant decision is recorded as an ADR in [`docs/adr/`](docs/adr/):
 The scoring logic is validated by an eval harness with authored golden pairs
 and an LLM-judged groundedness check for the AI bonus.
 
+## The patterns in a shipped product
+
+**[roomfit](https://github.com/ninitwin4/roomfit)** — a room-matching web app for
+renters, built as a separate product rather than another domain config.
+
+It reuses this engine's architecture — Tier 0 hard filters, a deterministic
+scored core, per-factor explanations surfaced to the user — applied to
+seeker→room matching, which is asymmetric: a person is scored against a
+listing, so there's no second direction to take the minimum of.
+
+No shared code; the ADRs travelled, not the implementation.
+
 ## Tech stack
 
 - **Engine & API:** Python, FastAPI
