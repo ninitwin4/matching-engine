@@ -24,6 +24,7 @@ extended with an "Alternatives considered" section.
 | [ADR-004](ADR-004-tiered-pipeline-directional-scoring.md) | Tiered matching pipeline, directional scoring, and minimum-score display | Accepted |
 | [ADR-005](ADR-005-tiered-model-escalation-for-the-ai-bonus.md) | Tiered model escalation for the Tier 2 AI nuance bonus | Accepted |
 | [ADR-006](ADR-006-complementary-and-soft-preference-scoring.md) | Engine gains complementary and soft-preference scoring | Accepted |
+| [ADR-007](ADR-007-repository-layout-seven-top-level-folders.md) | Repository layout: seven top-level folders, one-way dependencies | Accepted |
 
 ## Statuses
 
