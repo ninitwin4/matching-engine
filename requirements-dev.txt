@@ -1,7 +1,6 @@
-pytest
-pyyaml
-anthropic
-python-dotenv
-fastapi
-uvicorn
-httpx
+# Development dependencies — everything above, plus the test toolchain.
+# Install with: pip install -r requirements-dev.txt
+-r requirements.txt
+
+httpx==0.28.1    # fastapi.testclient.TestClient runs on it
+pytest==9.1.1

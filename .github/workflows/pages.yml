@@ -1,0 +1,38 @@
+# Publishes the demo frontend to GitHub Pages.
+#
+# GitHub Pages can only serve from the repo root or /docs — but the app lives
+# in frontend/ and docs/ holds the ADRs. This workflow uploads frontend/ alone,
+# so nothing has to move.
+#
+# One-time setup: repo Settings > Pages > Source = "GitHub Actions".
+name: Deploy frontend to Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**", ".github/workflows/pages.yml"]
+  workflow_dispatch: # lets you re-deploy by hand from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./frontend
+      - id: deployment
+        uses: actions/deploy-pages@v4

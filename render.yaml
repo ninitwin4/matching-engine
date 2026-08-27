@@ -1,0 +1,16 @@
+# Render blueprint — deploys the MatchingEngine API from the Dockerfile.
+# In Render: New > Blueprint > pick this repo. Render reads this file.
+#
+# ANTHROPIC_API_KEY is deliberately NOT set here (sync: false). Render will
+# prompt for it and store it as a secret — it never lives in the repo.
+# Without it the API still serves: the Tier 2 bonus degrades to base scores.
+services:
+  - type: web
+    name: matching-engine-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false

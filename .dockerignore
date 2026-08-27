@@ -1,0 +1,37 @@
+# Secrets — never into the image (the key is passed at runtime).
+.env
+.env.*
+!.env.example
+
+# Git / VCS
+.git
+.gitignore
+
+# Not needed to serve the API
+tests/
+evals/
+frontend/
+docs/
+conftest.py
+requirements-dev.txt
+CLAUDE.md
+README.md
+
+# Local tooling / learning journey (not part of the deployable app)
+.altitude/
+learning/
+.claude/
+.vscode/
+.idea/
+
+# Caches and OS cruft
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.DS_Store

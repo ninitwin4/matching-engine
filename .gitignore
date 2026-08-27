@@ -29,5 +29,11 @@ htmlcov/
 # Local dev-server config (machine-specific absolute paths)
 .claude/launch.json
 
+# Altitude learning-journey tooling (not part of the engineering project).
+# No trailing slash: .altitude is a file, not a directory.
+.altitude
+.altitude/
+learning/
+
 # macOS
 .DS_Store
