@@ -1,8 +1,16 @@
 # Runtime dependencies — what the API and engine need to run.
-# Pinned exactly (==) so a rebuild in six months installs what works today.
-anthropic==1.0.0
-fastapi==0.141.1
-pydantic==2.13.4
-python-dotenv==1.2.3
+# Pinned to the versions this project was actually built and tested against
+# (captured from the working environment via pip freeze), so a deploy installs
+# what is known to work rather than whatever is newest.
+#
+# anthropic is the pin that matters most: the Tier 2 bonus calls
+# client.messages.parse(..., output_format=...), and the 1.x line changed that
+# surface. Bumping it needs a live eval run (evals/run_ai_bonus.py) to confirm
+# the bonus still parses, not just a green pytest suite — the engine degrades
+# gracefully on SDK errors, so a broken bump looks like silent zero bonuses.
+anthropic==0.109.1
+fastapi==0.138.0
+pydantic==2.11.7
+python-dotenv==1.1.0
 PyYAML==6.0.3
-uvicorn==0.52.4
+uvicorn==0.49.0
