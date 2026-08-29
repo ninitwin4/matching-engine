@@ -46,8 +46,11 @@ def test_match_housing_ranked_with_candidate_attrs():
     assert matches[0]["candidate_id"] == "sf-maya"
     # Candidate display attributes are enriched onto each match.
     assert matches[0]["candidate"]["location"] == "San Francisco"
-    # Deterministic run: no bonus.
-    assert all(m["ai_adjustment"] == 0.0 for m in matches)
+    # No Anthropic client is configured here, yet the shipped pair cache still
+    # supplies the Tier 2 bonus — this is what lets the deployed demo serve AI
+    # rationales with no API key and no per-visitor cost (ADR-001 amendment 3).
+    assert all(not m["degraded"] for m in matches)
+    assert any(m["ai_rationale"] for m in matches), "cache should supply rationales"
 
 
 def test_match_healthcare_complementary_ranked():

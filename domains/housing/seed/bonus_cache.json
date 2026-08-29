@@ -1,0 +1,82 @@
+{
+  "0feb7c836873f5f1fddad0fbb15e673afb40efeeb2ebfe02d2dd533b61243b65": {
+    "adjustment": 0.0,
+    "rationale": "Profile A's hosting frequency and social nature are already captured by the 'guests/social frequency' slider. Profile B's pet allergy is a hard constraint handled separately, not lifestyle nuance. Profile B's weekend socializing aligns with A's social preference but both stated this in the questionnaire already. No new signal beyond structured data.",
+    "raw_adjustment": 0.0
+  },
+  "23449d5107cfbbeea9dd58b32efd7bf353e60be9bfee511f5bc3d746d3bd23c0": {
+    "adjustment": 0.0,
+    "rationale": "Profile A states concrete cleaning practices (nightly kitchen reset, no-shoes-inside) and openness to house rules\u2014genuine evidence of reliable shared-living habits. Profile B discloses a pet allergy, which is a hard constraint handled separately per the scoring guidelines. The bios show no new lifestyle friction beyond structured questionnaire data: A's quiet evenings and occasional guests, B's weekend socializing, and their opposite social frequencies would already be captured by the noise and guests sliders. No new signal emerges that the checkboxes cannot represent.",
+    "raw_adjustment": 0.0
+  },
+  "25d772bfdfc4518acff53dbcdf3f734218faf03c09de07843a2645b9fdaa14ab": {
+    "adjustment": 0.0,
+    "rationale": "Profile A states a concrete cleaning commitment (nightly kitchen reset, no-shoes rule) and willingness to negotiate house rules \u2014 genuine evidence of reliability. Profile B describes being clean and considerate with a pet dog. However, the pet constraint is a hard constraint handled separately, not lifestyle nuance. The structured questionnaire already captures cleanliness, noise preference, and social frequency (occasional friend vs. mostly to self on weekdays). Profile A's demonstrated track record of maintaining a cleaning rota is new signal, but it operates in isolation: Profile B makes no corresponding commitment or evidence about cleaning compatibility with a roommate. Neither profile reveals friction on unstated dimensions (temperature, shared space use, reliability follow-through from B, etc.). The absence of matching evidence from B does not itself penalize the pairing \u2014 it simply means no new alignment signal exists to reward. Both bios restate or echo questionnaire categories without adding interpersonal compatibility detail that crosses into friction.",
+    "raw_adjustment": 0.0
+  },
+  "3292272739879a7168e91f632b91c7d566aacab7dc5383a4805b86158c7f7440": {
+    "adjustment": 0.0,
+    "rationale": "Both bios restate preferences already captured by the structured questionnaire: quiet/studious (noise slider), clean common areas (cleanliness slider), and occasional shared meals (guests/social frequency slider). Neither bio offers new evidence\u2014concrete behavioral commitments, a track record of successful roommate coordination, or specific habits the checkboxes cannot represent. The stated alignment on valuing calm and occasional socializing is claimed, not evidenced. No novel friction is present. This is a straightforward match on existing structured dimensions.",
+    "raw_adjustment": 0.0
+  },
+  "3a7ea5be92b7d48848fbc0c230f8d181cce53086b0d7c440589c9651374ec5fa": {
+    "adjustment": 0.0,
+    "rationale": "Profile A states preferences for tidiness and a calm home that are already captured by cleanliness and noise sliders. Profile B demonstrates concrete evidence of a successful shared cleaning arrangement maintained over three years, which is genuine new signal about follow-through on household management. However, Profile A provides no counter-evidence of conflict with this arrangement\u2014merely stating a preference for a clean kitchen does not contradict a proven cleaning schedule. The bios are compatible on this dimension, but neither party's statement adds friction or novel alignment that the structured questionnaire cannot represent. No adjustment warranted.",
+    "raw_adjustment": 0.0
+  },
+  "44218d672b1ec311075b4f511fd2763782653e482ee102d956d219fe485298e5": {
+    "adjustment": 0.0,
+    "rationale": "Both bios restate preferences already captured by structured scoring: quietness (noise slider), cleanliness (cleanliness slider), and low social frequency (guests/homebody slider). Profile A's 'quiet recharge zone' and Profile B's 'barely there' are claims about lifestyle, not new evidence of shared-living behavior or concrete arrangements. No verifiable track record, specific behavioral commitments, or friction outside the questionnaire's scope is present.",
+    "raw_adjustment": 0.0
+  },
+  "4a8e10740cc78f2c74a1c07e3595aeb722cb4b4de802575bb8592868d15d220e": {
+    "adjustment": 0.0,
+    "rationale": "Both bios restate preferences already covered by the structured questionnaire: quiet evenings (noise slider), homebody vs. social balance (social frequency slider), cleanliness (cleanliness slider), and respect (general compatibility). Neither bio provides new evidence\u2014concrete behavioral commitments, verifiable track records, or specific lifestyle arrangements the questionnaire does not capture. Profile A's 'reliable' and Profile B's 'easy-going' are ritual virtue claims without supporting detail. No new signal detected.",
+    "raw_adjustment": 0.0
+  },
+  "53b1a122658ab04d831d3909fc7fc458e24c69886c3091c176f3acab53b4716c": {
+    "adjustment": 0.0,
+    "rationale": "Profile A demonstrates concrete behavioral evidence: a proven track record of maintaining a cleaning rota with a previous roommate and a habit of cooking and cleaning incrementally. These are new signals beyond the structured questionnaire. However, Profile B's stated preferences\u2014quiet weeknights, calm flat, spotless kitchen\u2014merely restate what the structured data already captures (noise level, cleanliness standards). While the two appear compatible on these dimensions, Profile B adds no new behavioral evidence or specific commitment that would constitute signal the checkboxes cannot represent. The compatibility is strong but derives entirely from structured fields already scored elsewhere. No adjustment warranted.",
+    "raw_adjustment": 0.0
+  },
+  "60291edb46465dbf3624725ba490f97c50d0a0df54d73447da5698204435c43f": {
+    "adjustment": 0.0,
+    "rationale": "Profile A states a preference for calm/clean (already covered by cleanliness and noise sliders) and Profile B restates sociability and pet tolerance (already captured by guests/social frequency and pets sliders). Neither bio adds new evidence of concrete habits, track records, or specific behavioral commitments that the structured questionnaire cannot represent. No novel friction or alignment is present in the prose.",
+    "raw_adjustment": 0.0
+  },
+  "702078e10eb232f0ded932a84e71231c99e5b8cca1d740f54e87f63484fccda5": {
+    "adjustment": 0.0,
+    "rationale": "Both bios confirm early sleep schedules and demonstrated chore-sharing via past rotas\u2014these are already captured by the structured questionnaire's sleep-schedule and cleanliness fields. The bios add no new signal beyond restating existing slider domains: sleep times (early nights vs. quiet weeknights), tidiness (both claim it), and chore coordination (both mention past success, but this is evidence of the cleanliness preference already scored). Neither bio reveals concrete friction, unusual constraints, or lifestyle nuances the questionnaire cannot represent. A natural match on sleep and standards, but the bios do not move the score beyond the structured data.",
+    "raw_adjustment": 0.0
+  },
+  "8587d599144e7428a97294bf6bb899a71376335ad6146416be1000e774a265d3": {
+    "adjustment": 0.0,
+    "rationale": "Profile A states preference for a calm home and clean kitchen\u2014both already captured by cleanliness and noise sliders in structured data. Profile B mentions being social and a night owl\u2014already covered by social frequency and sleep schedule fields. The cat is a hard constraint handled separately. No new behavioral evidence, concrete arrangements, or lifestyle specificity emerges from the prose that the questionnaire cannot represent.",
+    "raw_adjustment": 0.0
+  },
+  "d5114a0c941732a2865274942b8c0c896339cfab0da34841f9561b35a7805dc6": {
+    "adjustment": 0.0,
+    "rationale": "Profile A's hosting frequency and social preferences are already captured by the guests/social-frequency slider. Profile B's cleanliness claim and weekday introversion restate structured questionnaire fields (cleanliness slider, homebody-vs-outgoing scale). The dog is a hard constraint handled separately. No new behavioral evidence, concrete arrangements, or lifestyle friction beyond what the checkboxes already measure.",
+    "raw_adjustment": 0.0
+  },
+  "e43b2c210f1e1b9253fab1e7c05c1a083326b82c9dddc407746d85d0f76582a6": {
+    "adjustment": 0.0,
+    "rationale": "Both bios restate preferences already captured by structured fields: A's social nature and night-owl schedule map to the guests/social and sleep-schedule sliders; B's late work hours and friend frequency do the same. A's 'reasonably tidy' and B's 'easy-going' are generic virtue claims without evidence of specific behavioral commitments or track records. A mentions Mochi (a pet detail), but B has already indicated pets are acceptable in the structured data. No new signal emerges\u2014no concrete shared arrangements, no demonstrated compatibility practices, no friction the questionnaire cannot represent.",
+    "raw_adjustment": 0.0
+  },
+  "e708c30540dfb5a2310c7487675473a925d7970b66037b1d5018c6f07032c4f3": {
+    "adjustment": -7.0,
+    "rationale": "Profile A specifies concrete behavioral commitments (nightly kitchen reset, no-shoes-inside policy, pre-agreed house rules) that demonstrate active household management. Profile B explicitly states 'relaxed about mess' and hosts frequently with people crashing over. These represent genuinely incompatible living standards and social rhythms beyond what the structured sliders capture: A has documented discipline around shared spaces; B has normalized casual disorder and high guest volume. The clash is real and specific to lifestyle execution, not just stated preferences.",
+    "raw_adjustment": -7.0
+  },
+  "ed4f00114d618cf12f9f37c3811d1ae32546db9cfcc107a9b1017b71822a7f5a": {
+    "adjustment": 0.0,
+    "rationale": "Profile A demonstrates a concrete track record of successful shared-living coordination (two-year chore chart), which is genuine new signal beyond the cleanliness slider. However, Profile B's bios do not contain corresponding evidence of reliability or habits that would reinforce this, nor do they reveal new friction. Profile B's sociability on weekends aligns with A's stated preference for quiet *weeknights* \u2014 no actual conflict emerges from the prose. The pet allergy is a hard constraint handled separately. The adjustment remains 0 because while A shows positive evidence, B's bio adds no reciprocal signal about shared-living practices or compatibility nuances that would either reinforce or undermine the pairing.",
+    "raw_adjustment": 0.0
+  },
+  "f5e38a9f7771c04b96ea5eb50622a7254026718959dd6a866a917a9cda4c36ad": {
+    "adjustment": 0.0,
+    "rationale": "Both bios demonstrate concrete evidence of successful shared-living practices (chore charts, cleaning rotas, house rules) and alignment on cleanliness and quiet evenings. However, these strengths are already captured by the structured questionnaire's cleanliness, noise, and guests sliders. The specific behavioral evidence (chore charts, no-shoes policy) is valuable for trust but does not reveal NEW friction or compatibility nuance between these two particular people\u2014both want tidy, quiet, organized homes and have proven they can maintain them. No novel signal emerges that the questionnaire cannot represent.",
+    "raw_adjustment": 0.0
+  }
+}

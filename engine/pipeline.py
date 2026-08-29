@@ -69,7 +69,14 @@ def run_match(
     by_base = sorted(scored, key=lambda x: (-min(x[1], x[2]), x[0].id))
     topn_ids = {x[0].id for x in by_base[:limit]}
 
-    can_bonus = bonus_spec is not None and client is not None and text_of is not None
+    # A warm cache is enough on its own: cache hits need no client, and a miss
+    # without one degrades gracefully to the base score (ADR-001). This lets a
+    # fully-cached deployment serve AI rationales with no API key present.
+    can_bonus = (
+        bonus_spec is not None
+        and text_of is not None
+        and (client is not None or bonus_cache is not None)
+    )
 
     matches: list[Match] = []
     for cand, base_ab, base_ba, components in scored:
