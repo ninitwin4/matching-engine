@@ -18,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.models import MatchOut, MatchRequest, MatchResponse
 from domains.healthcare.match import match_patient
-from domains.housing.match import match_seeker
+from domains.housing.match import housing_bonus_cache, match_seeker
 from engine.types import Match
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,6 +43,12 @@ app.add_middleware(
 @lru_cache
 def _load(key: str) -> list[dict]:
     return json.loads(SEED[key].read_text())
+
+
+@lru_cache
+def _bonus_cache():
+    """Load the shipped pair cache once per process (read-only)."""
+    return housing_bonus_cache()
 
 
 def _seekers(domain: str) -> list[dict]:
@@ -112,7 +118,10 @@ def match(req: MatchRequest, client=Depends(get_client)):
 
     if req.domain == "housing":
         pool = [c for c in seekers if c.get("id") != req.seeker_id]
-        results = match_seeker(seeker, pool, client=client)
+        # Read-only pair cache (ADR-001 amendment 3): the shipped file covers
+        # every pair this API can be asked for, so a public visitor costs
+        # nothing. A miss still falls through to a live call.
+        results = match_seeker(seeker, pool, client=client, cache=_bonus_cache())
         candidates = {c["id"]: c for c in seekers}
         pool_size = len(pool)
     else:  # healthcare

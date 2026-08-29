@@ -35,6 +35,7 @@ def run_match(
     bonus_spec: AIBonusSpec | None = None,
     client=None,
     text_of: Callable[[Entity], str] | None = None,
+    bonus_cache=None,
 ) -> list[Match]:
     """Rank `candidates` for `seeker`.
 
@@ -44,6 +45,8 @@ def run_match(
 
     The bonus runs only when `bonus_spec`, `client`, and `text_of` are all
     provided — so passing `client=None` yields a pure deterministic run.
+    `bonus_cache` is optional; when supplied, already-scored pairs are served
+    from it instead of re-calling the LLM (ADR-001 amendment 3).
     """
     # Tier 0 — viability gate. Filtered pairs are never scored (ADR-004).
     survivors = [c for c in candidates if run_filters(seeker, c, filters).passed]
@@ -74,7 +77,11 @@ def run_match(
         if can_bonus and cand.id in topn_ids:
             ai_applied = True
             result = compute_bonus(
-                text_of(seeker), text_of(cand), spec=bonus_spec, client=client
+                text_of(seeker),
+                text_of(cand),
+                spec=bonus_spec,
+                client=client,
+                cache=bonus_cache,
             )
             adjustment = result.adjustment
             rationale = result.rationale
