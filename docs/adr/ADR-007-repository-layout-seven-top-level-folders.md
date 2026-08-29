@@ -82,3 +82,29 @@ The cost to newcomers is that they'd need to read both the `tests/` and
   integration), which would test whether `api/` is a real boundary or merely
   a wrapper around `frontend/`'s needs.
 - Any folder grows large enough to need internal structure of its own.
+
+## Amendment (2026-08-29, operational tooling gains a folder)
+
+The repository now has **eight** top-level folders. `scripts/` was added
+alongside the pair-level bonus cache (commit `2bf7b96`), holding
+`build_bonus_cache.py` — a program run by hand, offline, that precomputes
+`domains/housing/seed/bonus_cache.json` so the deployed demo answers without
+an API key.
+
+- **`scripts/`** — offline operational tooling. Programs a human runs
+  deliberately and occasionally to produce or refresh artifacts the product
+  consumes, such as `build_bonus_cache.py`, which sweeps the seed pool and
+  writes `domains/housing/seed/bonus_cache.json`. A script orchestrates
+  components that already exist elsewhere; it never becomes the place a rule
+  lives. The enforceable form is a dependency rule — the arrow points only
+  out of `scripts/`, into `engine/`, `domains/` and `api/`, and never back.
+
+`scripts/` was not folded into `evals/`, which also holds a hand-run script
+that costs money. `evals/` owns measurement — it asks whether the scoring
+produces good matches, and its outputs are reports written for a human to
+read and judge. Building a cache is data generation: its output is a
+production artifact the API serves at runtime, so it feeds the product
+rather than judging it. One is evidence, the other is fuel.
+
+The dependency direction stated above is unchanged: `scripts/` imports from
+`domains/` and `engine/`, and nothing imports `scripts/`.
