@@ -51,6 +51,7 @@ Every significant decision is recorded as an ADR in [`docs/adr/`](docs/adr/):
 - ADR-004 — Tiered pipeline, directional scoring, minimum-score display
 - ADR-005 — Model escalation (Haiku default, Sonnet for ambiguous cases)
 - ADR-006 — Complementary + soft-preference scoring (added for healthcare)
+- ADR-007 — Repository layout: seven top-level folders, one-way dependencies
 
 The scoring logic is validated by an eval harness with authored golden pairs
 and an LLM-judged groundedness check for the AI bonus.
