@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "MatchingEngine: Domain-Agnostic Compatibility Scoring with Bounded LLM Adjustment"
+authors:
+  - given-names: Ni Ni
+    family-names: Tin Win
+    orcid: "https://orcid.org/0009-0006-4794-7391"
+abstract: >-
+  MatchingEngine is a compatibility-matching system whose scoring core is
+  independent of any single industry: the core knows only entities, attributes,
+  constraints and weights, while per-domain configuration files supply the
+  vocabulary and weights for a given domain. Two domains are implemented against
+  the same core — roommate matching and patient-to-therapist matching — and
+  adding the second required implementing two scoring roles the core's own design
+  had already declared but never built, leaving the first domain's scores
+  byte-identical. Matching runs as a three-tier pipeline in which hard filters
+  remove non-viable pairs before any scoring, deterministic scoring produces a
+  0-90 base from structured attributes, and a bounded large-language-model layer
+  reads free-text profiles to adjust that score by at most 10 points in either
+  direction, hard-capped in code and degrading to the deterministic result
+  whenever a model call fails. The scoring logic is validated by an eval harness
+  that combines deterministic unit cases with LLM-based checks for bounds,
+  direction, groundedness and run-to-run consistency.
+keywords:
+  - compatibility matching
+  - recommender systems
+  - large language models
+  - LLM evaluation
+  - hybrid scoring
+  - constraint-based filtering
+license: MIT
+repository-code: "https://github.com/ninitwin4/matching-engine"
+version: 1.0.0
+date-released: 2026-09-08
