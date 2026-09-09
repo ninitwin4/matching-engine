@@ -1,0 +1,34 @@
+{
+  "upload_type": "software",
+  "title": "MatchingEngine: Domain-Agnostic Compatibility Scoring with Bounded LLM Adjustment",
+  "version": "1.0.0",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Tin Win, Ni Ni",
+      "orcid": "0009-0006-4794-7391"
+    }
+  ],
+  "keywords": [
+    "compatibility matching",
+    "recommender systems",
+    "large language models",
+    "LLM evaluation",
+    "hybrid scoring",
+    "constraint-based filtering"
+  ],
+  "related_identifiers": [
+    {
+      "scheme": "url",
+      "identifier": "https://ninitwin4.github.io/matching-engine/",
+      "relation": "isSupplementedBy"
+    },
+    {
+      "scheme": "url",
+      "identifier": "https://ninitinwin.com",
+      "relation": "isSupplementedBy"
+    }
+  ],
+  "description": "<p>MatchingEngine is a compatibility-matching system whose scoring core is independent of any single industry: the core knows only entities, attributes, constraints and weights, while per-domain configuration files supply the vocabulary and weights for a given domain.</p><p>Two domains are implemented against the same core &mdash; roommate matching and patient-to-therapist matching &mdash; and adding the second required implementing two scoring roles the core's own design had already declared but never built, leaving the first domain's scores byte-identical.</p><p>Matching runs as a three-tier pipeline in which hard filters remove non-viable pairs before any scoring, deterministic scoring produces a 0-90 base from structured attributes, and a bounded large-language-model layer reads free-text profiles to adjust that score by at most 10 points in either direction, hard-capped in code and degrading to the deterministic result whenever a model call fails.</p><p>The scoring logic is validated by an eval harness that combines deterministic unit cases with LLM-based checks for bounds, direction, groundedness and run-to-run consistency.</p><p>The harness separates the two testing problems the hybrid design creates. Deterministic scoring has exact expected outputs and is checked with authored golden pairs. The language-model layer does not: its output varies between runs, so a single sample cannot establish that it behaves. Each case is therefore run repeatedly and checked on four dimensions &mdash; that the adjustment stays within its bounds after parsing, that its sign is correct on pairs with clearly aligned or clearly conflicting text, that the rationale cites only facts present in the input and introduces none absent from it, and that repeated runs stay within a bounded spread.</p>"
+}
