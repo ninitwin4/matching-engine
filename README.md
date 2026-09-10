@@ -1,12 +1,16 @@
 # MatchingEngine
 
-A domain-agnostic AI matching engine — one scoring core, any industry, from
-housing to healthcare. Built with an eval harness that validates match quality
-automatically.
+A domain-agnostic compatibility matching engine — one deterministic scoring
+core, from housing to healthcare, with a bounded AI adjustment on top. Built
+with an eval harness that validates the scoring logic.
 
 [![Watch the MatchingEngine demo](https://img.youtube.com/vi/FQaMMsk5KHk/maxresdefault.jpg)](https://www.youtube.com/watch?v=FQaMMsk5KHk)
 
 ▶ **[Watch the 60-second demo](https://www.youtube.com/watch?v=FQaMMsk5KHk)** — one engine matching housing and healthcare.
+
+**[Try the live demo](https://ninitwin4.github.io/matching-engine/)** — runs in
+the browser; the free-tier API can take several seconds to wake on the first
+request.
 
 > Synthetic demo data · one engine scoring two domains.
 
@@ -21,9 +25,13 @@ MatchingEngine separates the two: a generic scoring engine that knows only
 that describe what those mean for a given industry.
 
 Housing is the first reference implementation. Healthcare (patient-to-therapist)
-is the second — added as a config file and seed data, with the engine running
-unchanged. That's the whole thesis: **the engine is the product; each domain is
-a consumer.**
+is the second, added as a config file and seed data. It also required
+implementing two scoring roles — complementary and soft-preference — that the
+engine's design had already declared but never built; housing's scores stayed
+byte-identical
+([ADR-006](docs/adr/ADR-006-complementary-and-soft-preference-scoring.md)).
+That's the whole thesis: **the engine is the product; each domain is a
+consumer.**
 
 ## How it works
 
@@ -53,8 +61,8 @@ Every significant decision is recorded as an ADR in [`docs/adr/`](docs/adr/):
 - ADR-006 — Complementary + soft-preference scoring (added for healthcare)
 - ADR-007 — Repository layout: seven top-level folders, one-way dependencies
 
-The scoring logic is validated by an eval harness with authored golden pairs
-and an LLM-judged groundedness check for the AI bonus.
+The scoring logic is validated by an [eval harness](evals/) with authored
+golden pairs and an LLM-judged groundedness check for the AI bonus.
 
 ## The patterns in a shipped product
 
@@ -72,29 +80,47 @@ No shared code; the ADRs travelled, not the implementation.
 
 - **Engine & API:** Python, FastAPI
 - **Scoring:** deterministic core + Anthropic API (Claude) for the AI bonus
-- **Frontend:** React, Tailwind, Vite
+- **Frontend:** React + Tailwind via CDN, no build step
 - **Evals:** pytest (deterministic) + a custom LLM-eval runner
 
 ## Run it locally
 
-Backend:
+Backend (Python 3.12+):
 
 ```bash
 pip install -r requirements.txt
 uvicorn api.main:app --reload --port 8000
 ```
 
-Frontend:
+Frontend (no build step, no Node — separate terminal):
 
 ```bash
-cd frontend
-npm install
-VITE_API_BASE_URL=http://localhost:8000 npm run dev
+python3 -m http.server 5173 --directory frontend
+# open http://localhost:5173
 ```
 
-The AI bonus requires an `ANTHROPIC_API_KEY` in a local `.env` (see
-`.env.example`). The engine degrades gracefully to deterministic-only scoring
-if no key is present.
+Served from localhost, the page calls the local API automatically (see
+`frontend/env.js`).
+
+### Or run the API in Docker
+
+```bash
+docker build -t matching-engine-api .
+docker run --rm -p 8000:8000 matching-engine-api
+```
+
+The image holds the API only; serve the frontend with the command above. Add
+`--env-file .env` to pass an API key — it is supplied at runtime and never
+copied into the image.
+
+### API key
+
+None is needed to run the demo: every pair the API can serve is answered from a
+shipped cache (`domains/housing/seed/bonus_cache.json`). An `ANTHROPIC_API_KEY`
+in a local `.env` (see `.env.example`) is only needed to run the LLM eval
+suite, rebuild the cache, or score pairs the cache doesn't cover, such as
+edited seed profiles. Without one, uncached pairs fall back to
+deterministic-only scoring.
 
 ## Security & scope
 
@@ -108,10 +134,13 @@ what's planned, and what's deliberately out of scope:
   alone) and can never override a hard constraint. If the model call fails or
   returns unparseable output, the system degrades gracefully to
   deterministic-only scoring.
+- Cost exposure on the public demo: every pair the deployed API can serve is
+  answered from a pre-computed cache, so visitor traffic triggers no LLM calls.
 
-**Planned before any public or real-user deployment**
-- Rate limiting on the LLM-backed endpoint, so a public link can't be used to
-  run up API cost (a per-IP cap and/or pre-computed demo results).
+**Planned before any real-user deployment**
+- Rate limiting. The public demo is unauthenticated and unthrottled; the cache
+  removes its LLM cost, but a service taking real user input would need a
+  per-IP cap.
 - Prompt-injection handling on free-text bios: bios are user-authored text fed
   to the model, so a crafted bio could attempt to steer scoring. The ±10 cap
   already limits the blast radius; deliberate input separation and
@@ -122,6 +151,24 @@ what's planned, and what's deliberately out of scope:
 - PII and data privacy — no real personal data is used. The healthcare domain
   demonstrates the engine's domain-agnosticism only; it is not a clinical
   product and is not HIPAA-scoped.
+
+## Citation
+
+If you use this software, please cite it. Machine-readable metadata lives in
+[`CITATION.cff`](CITATION.cff); GitHub renders it as **Cite this repository** in
+the sidebar, and [`.zenodo.json`](.zenodo.json) supplies the same metadata to
+Zenodo on release.
+
+<!-- DOI badge goes here after the first Zenodo release:
+     [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+     Use the *concept* DOI (the one that always resolves to the latest version),
+     not the version-specific DOI. Then add the same value as a `doi:` field to
+     CITATION.cff and .zenodo.json — deferred to v1.1.0, since the DOI does not
+     exist until the first release is published. -->
+
+> Tin Win, Ni Ni (2026). *MatchingEngine: Domain-Agnostic Compatibility Scoring
+> with Bounded LLM Adjustment* (version 1.0.0).
+> https://github.com/ninitwin4/matching-engine
 
 ## Status
 
