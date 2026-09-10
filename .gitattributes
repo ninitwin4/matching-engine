@@ -1,0 +1,3 @@
+# Excluded from release archives (GitHub source ZIPs, and so the Zenodo
+# snapshot). The file stays in the repository; it is not part of the archive.
+docs/engine-map.md export-ignore
