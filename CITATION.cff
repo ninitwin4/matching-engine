@@ -31,5 +31,6 @@ keywords:
   - constraint-based filtering
 license: MIT
 repository-code: "https://github.com/ninitwin4/matching-engine"
-version: 1.0.0
+doi: 10.5281/zenodo.22699739
+version: 1.1.0
 date-released: 2026-09-10

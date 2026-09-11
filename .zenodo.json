@@ -1,7 +1,7 @@
 {
   "upload_type": "software",
   "title": "MatchingEngine: Domain-Agnostic Compatibility Scoring with Bounded LLM Adjustment",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publication_date": "2026-09-10",
   "access_right": "open",
   "license": "MIT",

@@ -155,21 +155,17 @@ what's planned, and what's deliberately out of scope:
 
 ## Citation
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22699739.svg)](https://doi.org/10.5281/zenodo.22699739)
+
 If you use this software, please cite it. Machine-readable metadata lives in
 [`CITATION.cff`](CITATION.cff); GitHub renders it as **Cite this repository** in
 the sidebar, and [`.zenodo.json`](.zenodo.json) supplies the same metadata to
-Zenodo on release.
-
-<!-- DOI badge goes here after the first Zenodo release:
-     [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
-     Use the *concept* DOI (the one that always resolves to the latest version),
-     not the version-specific DOI. Then add the same value as a `doi:` field to
-     CITATION.cff and .zenodo.json — deferred to v1.1.0, since the DOI does not
-     exist until the first release is published. -->
+Zenodo on release. The DOI above always resolves to the latest archived
+version; each release also has its own version-specific DOI, listed on the
+Zenodo record.
 
 > Tin Win, Ni Ni (2026). *MatchingEngine: Domain-Agnostic Compatibility Scoring
-> with Bounded LLM Adjustment* (version 1.0.0).
-> https://github.com/ninitwin4/matching-engine
+> with Bounded LLM Adjustment*. Zenodo. https://doi.org/10.5281/zenodo.22699739
 
 ## Status
 
