@@ -7,10 +7,11 @@ the expandable **Score Composition** are the focus.
 
 ## Run it (no Node required)
 
-From the project root, with `.env` holding `ANTHROPIC_API_KEY`:
+From the project root. No API key is needed: housing's AI adjustments are
+served from the shipped cache.
 
 ```bash
-# 1. API (housing scoring makes live Haiku calls)
+# 1. API
 python3 -m uvicorn api.main:app --port 8000
 
 # 2. Frontend (separate terminal)
@@ -18,9 +19,9 @@ python3 -m http.server 5173 --directory frontend
 # open http://localhost:5173
 ```
 
-The API base URL is read from `env.js` (`window.API_BASE`, default
-`http://localhost:8000`) — edit that file to point elsewhere. This mirrors the
-`VITE_API_BASE_URL` convention for a future Vite migration.
+The API base URL comes from `env.js` (`window.API_BASE`): served from
+localhost, the page calls `http://localhost:8000`; anywhere else, it calls the
+deployed API.
 
 ## Notes
 

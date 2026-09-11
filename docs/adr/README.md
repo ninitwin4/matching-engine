@@ -38,7 +38,7 @@ The project doubles as a learning vehicle. The phases are sequenced so each
 produces the raw material the next requires:
 
 1. **Golden pairs** — author the eval dataset (the product's theory of
-   compatibility, in testable form). *In progress.*
+   compatibility, in testable form). *Done.*
 2. **Eval harness runs** — dataset + runner + report (ADR-002 skeleton).
 3. **Failure analysis** — only learnable once real failures exist: build a
    failure taxonomy (direction errors, groundedness errors, variance

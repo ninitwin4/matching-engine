@@ -4,8 +4,8 @@
 // Local dev  -> the page is served from localhost, so it calls the local API.
 // Deployed   -> anywhere else, it calls the hosted API below.
 //
-// After deploying the API to Render, replace PRODUCTION_API with that URL
-// (e.g. "https://matching-engine-api.onrender.com" — no trailing slash).
+// PRODUCTION_API is the Render deployment (render.yaml). If the API is ever
+// redeployed elsewhere, point this at the new URL — no trailing slash.
 (function () {
   var PRODUCTION_API = "https://matching-engine-api-15zp.onrender.com";
   var host = window.location.hostname;

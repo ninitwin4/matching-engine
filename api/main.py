@@ -5,8 +5,10 @@ already tested. The app imports them; they never import the app (ADR-003).
 This layer adds domain routing and candidate enrichment; the engine and the
 domain packages are unchanged.
 
-Housing scoring uses the live Haiku bonus (ADR-005 amendment); healthcare is
-deterministic (no Tier 2). The Anthropic key is read from env/.env.
+Housing's Tier 2 bonus is served from the shipped pair cache, so the API needs
+no key to answer any seed pair; with a key in env/.env, a pair missing from the
+cache is scored live by Haiku (ADR-005 amendment). Healthcare is deterministic
+(no Tier 2).
 """
 
 import json
@@ -30,8 +32,9 @@ SEED = {
 
 app = FastAPI(title="MatchingEngine API", version="2.0")
 
-# Demo CORS: the Vite dev server runs on a different origin. Permissive is fine
-# here — the API is read-only, holds no secrets in responses, and is local.
+# Permissive CORS: the frontend is served from a different origin (GitHub Pages,
+# or localhost:5173 in dev). Safe here — the API is read-only, uses no cookies
+# or auth, and returns no secrets.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -61,8 +64,9 @@ def _seekers(domain: str) -> list[dict]:
 
 def get_client():
     """Anthropic client for live Tier 2 scoring (housing), or None if no key is
-    available — matching then degrades gracefully (ADR-001). Overridden to None
-    in tests to keep them LLM-free."""
+    available — cached pairs are still served, and a cache miss degrades
+    gracefully to the base score (ADR-001). Overridden to None in tests to keep
+    them LLM-free."""
     try:
         from dotenv import load_dotenv
 

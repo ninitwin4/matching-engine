@@ -43,10 +43,11 @@ def run_match(
     hard-constraint violations; Tier 2 applies the bonus to the top-N by base
     score only; results are ranked by the displayed (minimum) score.
 
-    The bonus runs only when `bonus_spec`, `client`, and `text_of` are all
-    provided — so passing `client=None` yields a pure deterministic run.
-    `bonus_cache` is optional; when supplied, already-scored pairs are served
-    from it instead of re-calling the LLM (ADR-001 amendment 3).
+    The bonus runs when `bonus_spec` and `text_of` are provided along with a
+    `client`, a `bonus_cache`, or both — so passing neither yields a pure
+    deterministic run. With a cache, already-scored pairs are served from it
+    instead of re-calling the LLM (ADR-001 amendment 3); a cache miss with no
+    client degrades to the base score.
     """
     # Tier 0 — viability gate. Filtered pairs are never scored (ADR-004).
     survivors = [c for c in candidates if run_filters(seeker, c, filters).passed]

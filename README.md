@@ -135,7 +135,8 @@ what's planned, and what's deliberately out of scope:
   returns unparseable output, the system degrades gracefully to
   deterministic-only scoring.
 - Cost exposure on the public demo: every pair the deployed API can serve is
-  answered from a pre-computed cache, so visitor traffic triggers no LLM calls.
+  answered from a pre-computed cache, so visitor traffic triggers no LLM calls
+  and the deployment needs no API key.
 
 **Planned before any real-user deployment**
 - Rate limiting. The public demo is unauthenticated and unthrottled; the cache

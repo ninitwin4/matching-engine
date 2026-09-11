@@ -54,8 +54,8 @@ def match_seeker(
     """Rank candidates for one seeker.
 
     Each profile is a flat questionnaire dict; candidate profiles must carry an
-    `id`. Pass a live Anthropic `client` to enable the Tier 2 bonus; omit it
-    (or pass None) for a pure deterministic Tier 0+1 run.
+    `id`. Pass a live Anthropic `client`, a `cache`, or both to enable the
+    Tier 2 bonus; omit both for a pure deterministic Tier 0+1 run.
 
     `cache` is the pair-level bonus cache. Pass `housing_bonus_cache()` to
     serve known pairs without an LLM call; omit it to always call live.

@@ -12,9 +12,6 @@ file, and it sketched a four-folder layout in passing (`engine/`, `domains/`,
 folders — `api/`, `domains/`, `docs/`, `engine/`, `evals/`, `frontend/`,
 `tests/` — without that growth ever being recorded as a decision.
 
-This is for me to test how well I understand what the AI coding agent builds from all my ADR decisions, 
-and also to review which are the main components to keep and which are deadweight to remove.
-
 ## Decision
 
 **Keep the seven-folder split. Each top-level folder owns exactly one
