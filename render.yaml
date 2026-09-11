@@ -3,7 +3,8 @@
 #
 # ANTHROPIC_API_KEY is deliberately NOT set here (sync: false). Render will
 # prompt for it and store it as a secret — it never lives in the repo.
-# Without it the API still serves: the Tier 2 bonus degrades to base scores.
+# Without it the API still serves, including AI rationales for every seed pair
+# (from the shipped cache); only uncached pairs degrade to base scores.
 services:
   - type: web
     name: matching-engine-api

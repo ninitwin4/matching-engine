@@ -1,0 +1,71 @@
+# Builds the API image and smoke-tests the running container, so a broken
+# Dockerfile fails here instead of on Render. Also checks two properties the
+# Dockerfile promises: the app runs as a non-root user that can't modify its own
+# code, and it shuts down cleanly on SIGTERM.
+name: Docker build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "requirements.txt"
+      - "api/**"
+      - "engine/**"
+      - "domains/**"
+      - ".github/workflows/docker.yml"
+  workflow_dispatch: # lets you re-run by hand from the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t matching-engine-api .
+
+      # No ANTHROPIC_API_KEY, as on a fresh host: the shipped cache must still
+      # serve AI rationales.
+      - name: Start container
+        run: docker run -d --name api -p 8000:8000 matching-engine-api
+
+      - name: Wait for the image's HEALTHCHECK to report healthy
+        run: |
+          for _ in $(seq 1 45); do
+            status=$(docker inspect -f '{{.State.Health.Status}}' api)
+            if [ "$status" = healthy ]; then exit 0; fi
+            sleep 2
+          done
+          docker logs api
+          exit 1
+
+      - name: Smoke-test /match for both domains
+        run: |
+          curl -fsS -X POST localhost:8000/match \
+            -H 'Content-Type: application/json' \
+            -d '{"domain":"housing","seeker_id":"sf-priya"}' \
+            | python3 -c "import json,sys; m=json.load(sys.stdin)['matches']; assert m, 'no matches'; assert not any(x['degraded'] for x in m), 'cache miss'; assert m[0]['ai_rationale'], 'no cached rationale'"
+          curl -fsS -X POST localhost:8000/match \
+            -H 'Content-Type: application/json' \
+            -d '{"domain":"healthcare","seeker_id":"p-rivera"}' \
+            | python3 -c "import json,sys; assert json.load(sys.stdin)['matches'], 'no matches'"
+
+      - name: Runs as non-root and cannot modify its own code
+        run: |
+          test "$(docker exec api id -u)" != 0
+          if docker exec api sh -c 'echo x >> /app/api/main.py'; then
+            echo "app code is writable by the runtime user"
+            exit 1
+          fi
+
+      # If uvicorn weren't PID 1, SIGTERM would stop at the shell and uvicorn
+      # would be SIGKILLed after the timeout, never logging its shutdown.
+      - name: Shuts down cleanly on SIGTERM
+        run: |
+          docker stop -t 10 api
+          docker logs api 2>&1 | grep -q "Application shutdown complete"
