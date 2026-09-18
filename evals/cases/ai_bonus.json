@@ -133,6 +133,25 @@
         "max_spread": 5,
         "note": "New-signal negative, neither slider nor hard constraint: a conflict/communication-style mismatch (direct/immediate vs. needs-to-retreat). No structured field captures conflict style, and it is graded interpersonal friction, not a house-rule the hard-constraint layer would catch."
       }
+    },
+    {
+      "id": "ai-007",
+      "kind": "ai_bonus",
+      "flavor": "hidden_friction",
+      "description": "Negative case under Option B: directly opposed STATED PREFERENCES about shared food and kitchen items. A wants a communal kitchen (split groceries, shared staples, take what you need) and explicitly rejects labels and separate shelves; B requires separate, labeled food and no borrowing without asking. No questionnaire field asks about food-sharing norms, and it is not a hard constraint. Deliberately NOT the prompt's own warm-vs-cold example, so the case tests generalization rather than recall of the prompt.",
+      "bio_a": "I love a communal kitchen - I'd want us to split groceries, share staples like oil, rice, and coffee, and just take whatever's in the fridge. Labeling food and keeping separate shelves feels cold to me.",
+      "bio_b": "I need my food to stay mine - I buy specific things for my weekly meal prep, and it throws off my whole week when something I planned on is gone. Separate shelves, labeled groceries, and nobody borrows without asking.",
+      "expected": {
+        "direction": "negative",
+        "must_reference": [
+          ["communal kitchen", "split groceries", "share staples", "shared food", "take whatever", "share everything"],
+          ["separate shelves", "labeled", "label", "keep food separate", "borrow without asking", "meal prep", "food to stay mine"],
+          ["clash", "mismatch", "incompatible", "friction", "conflict", "opposing", "food-sharing norms", "kitchen norms"]
+        ],
+        "must_not_reference": [["a cleanliness or tidiness mismatch (neither bio mentions cleanliness)"], ["a dietary restriction or food allergy not stated in the bios"]],
+        "max_spread": 5,
+        "note": "New-signal negative, neither slider nor hard constraint: opposed food-sharing norms (communal vs. strictly separate). Both sides are explicit, so the conflict is stated, not inferred. must_not_reference guards two misreadings: recasting it as the cleanliness slider, and inventing a diet or allergy from B's 'meal prep'."
+      }
     }
   ]
 }
