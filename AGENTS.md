@@ -61,6 +61,11 @@ Only what the code won't tell you.
   Tailwind from CDNs and compiles JSX in the browser; the API base URL comes
   from `frontend/env.js`. There is no `package.json` and no Vite — don't run npm.
 
+## Changes
+
+- **Bugs get a failing test first.** Reproduce the bug with a test that fails,
+  then fix it. Don't write the fix before the reproduction exists.
+
 ## Working preferences
 
 - No co-author trailers on commits.
